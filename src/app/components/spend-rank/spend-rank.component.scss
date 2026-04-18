@@ -1,50 +1,50 @@
 .rank-card {
   background: var(--bg-card);
   border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 20px 24px;
+  border-radius: 14px;
+  padding: 14px 16px;
   overflow: hidden;
 }
 
 .rank-header {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 16px;
-  padding-bottom: 12px;
+  gap: 8px;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
   border-bottom: 1px solid var(--border);
 }
 
 .rank-icon {
-  font-size: 22px;
+  font-size: 16px;
   line-height: 1;
 }
 
 .rank-title {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: -0.2px;
 }
 
 .rank-subtitle {
-  font-size: 11px;
+  font-size: 10px;
   color: var(--text-muted);
-  margin-top: 2px;
+  margin-top: 1px;
 }
 
 .rank-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 4px;
 }
 
 .rank-row {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 6px;
   cursor: pointer;
-  padding: 4px 6px;
-  border-radius: 8px;
+  padding: 3px 4px;
+  border-radius: 6px;
   transition: background 0.15s;
 
   &:hover {
@@ -53,11 +53,11 @@
 }
 
 .rank-num {
-  width: 22px;
-  height: 22px;
-  border-radius: 6px;
+  width: 18px;
+  height: 18px;
+  border-radius: 5px;
   background: rgba(255, 255, 255, 0.06);
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 700;
   display: flex;
   align-items: center;
@@ -75,12 +75,12 @@
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  gap: 8px;
-  margin-bottom: 4px;
+  gap: 6px;
+  margin-bottom: 2px;
 }
 
 .rank-label {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   color: var(--text-primary);
   white-space: nowrap;
@@ -89,7 +89,7 @@
 }
 
 .rank-value {
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 700;
   color: var(--text-secondary);
   white-space: nowrap;
@@ -97,22 +97,22 @@
 }
 
 .rank-bar-track {
-  height: 6px;
+  height: 4px;
   background: rgba(255, 255, 255, 0.04);
-  border-radius: 3px;
+  border-radius: 2px;
   overflow: hidden;
 }
 
 .rank-bar-fill {
   height: 100%;
-  border-radius: 3px;
+  border-radius: 2px;
   transition: width 0.4s ease-out;
   min-width: 2px;
 }
 
 .rank-pct {
-  font-size: 10px;
+  font-size: 9px;
   color: var(--text-muted);
-  margin-top: 2px;
+  margin-top: 1px;
   text-align: right;
 }

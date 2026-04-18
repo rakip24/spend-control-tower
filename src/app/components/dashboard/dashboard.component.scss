@@ -130,13 +130,14 @@
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
   padding: 0 32px;
+  margin-top: 24px;
   margin-bottom: 8px;
 }
 
 .rank-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
   padding: 0 32px;
 }
 
@@ -192,7 +193,7 @@
 @media (max-width: 900px) {
   .bbn-grid { grid-template-columns: 1fr; }
   .hero-grid { grid-template-columns: 1fr; }
-  .rank-grid { grid-template-columns: 1fr; }
+  .rank-grid { grid-template-columns: 1fr 1fr; }
   .viz-grid { grid-template-columns: 1fr; }
   .narratives-grid { grid-template-columns: 1fr; }
   .header { flex-direction: column; gap: 12px; align-items: flex-start; }
