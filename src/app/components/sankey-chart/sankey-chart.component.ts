@@ -1,4 +1,4 @@
-import { Component, input, output, computed, ElementRef, viewChild, afterNextRender } from '@angular/core';
+import { Component, input, output, computed } from '@angular/core';
 import { SankeyNode, SankeyLink } from '../../models';
 
 @Component({
@@ -18,46 +18,72 @@ import { SankeyNode, SankeyLink } from '../../models';
         </div>
       </div>
 
-      <div class="sankey-container" [style.display]="activeTab === 'sankey' ? 'flex' : 'none'">
-        <svg class="sankey-flows" viewBox="0 0 800 300" preserveAspectRatio="none">
-          @for (link of svgPaths(); track link.source + link.target) {
-            <path [attr.d]="link.path"
-                  [attr.stroke]="link.isMaverick ? 'rgba(248,113,113,0.25)' : link.color"
-                  [attr.stroke-width]="link.width"
-                  fill="none"
-                  [attr.stroke-dasharray]="link.isMaverick ? '8 4' : 'none'"
-                  class="flow-path"
-                  (click)="nodeClicked.emit(link.source)" />
-          }
-        </svg>
+      <div class="sankey-wrapper" [style.display]="activeTab === 'sankey' ? 'block' : 'none'">
+        <div class="sankey-row">
+          <!-- Region column -->
+          <div class="sankey-column col-left">
+            <div class="col-header">Region</div>
+            @for (node of regionNodes(); track node.id) {
+              <div class="sankey-node" [class]="node.colorClass" (click)="nodeClicked.emit(node.id)">
+                {{ node.label }}
+                <div class="node-value">{{ node.formattedValue }}</div>
+              </div>
+            }
+          </div>
 
-        <div class="sankey-column">
-          @for (node of regionNodes(); track node.id) {
-            <div class="sankey-node" [class]="node.colorClass" (click)="nodeClicked.emit(node.id)">
-              {{ node.label }}
-              <div class="node-value">{{ node.formattedValue }}</div>
-            </div>
-          }
-        </div>
+          <!-- Left flow SVG (Region → Category) -->
+          <div class="flow-area">
+            <svg class="flow-svg" viewBox="0 0 200 320" preserveAspectRatio="none">
+              @for (link of leftPaths(); track link.source + link.target) {
+                <path [attr.d]="link.path"
+                      [attr.stroke]="link.isMaverick ? 'rgba(248,113,113,0.3)' : link.color"
+                      [attr.stroke-width]="link.width"
+                      fill="none"
+                      [attr.stroke-dasharray]="link.isMaverick ? '8 4' : 'none'"
+                      class="flow-path"
+                      (click)="nodeClicked.emit(link.source)" />
+              }
+            </svg>
+          </div>
 
-        <div class="sankey-column center-col">
-          @for (node of categoryNodes(); track node.id) {
-            <div class="sankey-node" [class]="node.colorClass" (click)="nodeClicked.emit(node.id)">
-              {{ node.label }}
-              <div class="node-value">{{ node.formattedValue }}</div>
-            </div>
-          }
-        </div>
+          <!-- Category column -->
+          <div class="sankey-column col-center">
+            <div class="col-header">Category</div>
+            @for (node of categoryNodes(); track node.id) {
+              <div class="sankey-node" [class]="node.colorClass" (click)="nodeClicked.emit(node.id)">
+                {{ node.label }}
+                <div class="node-value">{{ node.formattedValue }}</div>
+              </div>
+            }
+          </div>
 
-        <div class="sankey-column">
-          @for (node of tierNodes(); track node.id) {
-            <div class="sankey-node" [class]="node.colorClass"
-                 [class.pulse-tail]="node.id === 't-tail'"
-                 (click)="nodeClicked.emit(node.id)">
-              {{ node.label }}
-              <div class="node-value">{{ node.formattedValue }}</div>
-            </div>
-          }
+          <!-- Right flow SVG (Category → Tier) -->
+          <div class="flow-area">
+            <svg class="flow-svg" viewBox="0 0 200 320" preserveAspectRatio="none">
+              @for (link of rightPaths(); track link.source + link.target) {
+                <path [attr.d]="link.path"
+                      [attr.stroke]="link.isMaverick ? 'rgba(248,113,113,0.3)' : link.color"
+                      [attr.stroke-width]="link.width"
+                      fill="none"
+                      [attr.stroke-dasharray]="link.isMaverick ? '8 4' : 'none'"
+                      class="flow-path"
+                      (click)="nodeClicked.emit(link.source)" />
+              }
+            </svg>
+          </div>
+
+          <!-- Tier column -->
+          <div class="sankey-column col-right">
+            <div class="col-header">Vendor Tier</div>
+            @for (node of tierNodes(); track node.id) {
+              <div class="sankey-node" [class]="node.colorClass"
+                   [class.pulse-tail]="node.id === 't-tail'"
+                   (click)="nodeClicked.emit(node.id)">
+                {{ node.label }}
+                <div class="node-value">{{ node.formattedValue }}</div>
+              </div>
+            }
+          </div>
         </div>
       </div>
 
@@ -109,23 +135,74 @@ export class SankeyChartComponent {
   allNodes = computed(() => this.nodes());
   totalSpend = computed(() => Math.max(1, ...this.regionNodes().map(n => n.value)));
 
-  svgPaths = computed(() => {
-    // Pre-computed simplified SVG paths for the Sankey flows
-    const pathData: { source: string; target: string; path: string; width: number; color: string; isMaverick: boolean }[] = [
-      { source: 'r-North America', target: 'c-Lab Consumables', path: 'M 160 40 C 300 40, 300 30, 440 30', width: 40, color: 'rgba(78,140,255,0.2)', isMaverick: false },
-      { source: 'r-North America', target: 'c-Capital Equipment', path: 'M 160 90 C 300 90, 300 95, 440 95', width: 20, color: 'rgba(78,140,255,0.15)', isMaverick: false },
-      { source: 'r-North America', target: 'c-IT & Cloud', path: 'M 160 120 C 300 120, 300 155, 440 155', width: 14, color: 'rgba(78,140,255,0.12)', isMaverick: false },
-      { source: 'r-EMEA', target: 'c-Lab Consumables', path: 'M 160 160 C 300 160, 300 45, 440 45', width: 18, color: 'rgba(52,211,153,0.15)', isMaverick: false },
-      { source: 'r-EMEA', target: 'c-Facilities & Real Estate', path: 'M 160 180 C 300 180, 300 210, 440 210', width: 10, color: 'rgba(52,211,153,0.1)', isMaverick: false },
-      { source: 'r-APAC', target: 'c-Lab Consumables', path: 'M 160 220 C 300 220, 300 55, 440 55', width: 12, color: 'rgba(167,139,250,0.12)', isMaverick: false },
-      { source: 'r-LATAM', target: 'c-Lab Consumables', path: 'M 160 270 C 300 270, 300 60, 440 60', width: 5, color: 'rgba(251,191,36,0.08)', isMaverick: false },
-      { source: 'c-Lab Consumables', target: 't-strategic', path: 'M 580 45 C 650 45, 650 40, 720 40', width: 28, color: 'rgba(52,211,153,0.2)', isMaverick: false },
-      { source: 'c-Lab Consumables', target: 't-preferred', path: 'M 580 55 C 650 55, 650 100, 720 100', width: 18, color: 'rgba(78,140,255,0.15)', isMaverick: false },
-      { source: 'c-Lab Consumables', target: 't-tail', path: 'M 580 65 C 650 65, 650 220, 720 220', width: 8, color: 'rgba(248,113,113,0.25)', isMaverick: true },
-      { source: 'c-Capital Equipment', target: 't-strategic', path: 'M 580 95 C 650 95, 650 48, 720 48', width: 16, color: 'rgba(52,211,153,0.15)', isMaverick: false },
-      { source: 'c-IT & Cloud', target: 't-strategic', path: 'M 580 155 C 650 155, 650 55, 720 55', width: 12, color: 'rgba(52,211,153,0.12)', isMaverick: false },
-      { source: 'c-Facilities & Real Estate', target: 't-tactical', path: 'M 580 210 C 650 210, 650 170, 720 170', width: 8, color: 'rgba(251,191,36,0.12)', isMaverick: false },
-    ];
-    return pathData;
+  /** SVG paths for Region → Category flows (in a 200×320 viewBox) */
+  leftPaths = computed(() => {
+    const regions = this.regionNodes();
+    const categories = this.categoryNodes();
+    const links = this.links().filter(l => l.source.startsWith('r-'));
+    return this.buildPaths(regions, categories, links, 200);
   });
+
+  /** SVG paths for Category → Tier flows (in a 200×320 viewBox) */
+  rightPaths = computed(() => {
+    const categories = this.categoryNodes();
+    const tiers = this.tierNodes();
+    const links = this.links().filter(l => l.source.startsWith('c-'));
+    return this.buildPaths(categories, tiers, links, 200);
+  });
+
+  private buildPaths(
+    sourceNodes: SankeyNode[],
+    targetNodes: SankeyNode[],
+    links: { source: string; target: string; value: number; isMaverick: boolean }[],
+    width: number
+  ) {
+    const padding = 30;
+    const usableH = 320 - padding * 2;
+    const totalSourceVal = Math.max(1, sourceNodes.reduce((s, n) => s + n.value, 0));
+    const totalTargetVal = Math.max(1, targetNodes.reduce((s, n) => s + n.value, 0));
+    const gap = 12;
+
+    // Compute y-center for each source node
+    const sourceYMap = new Map<string, number>();
+    let sy = padding;
+    const sourceGapTotal = Math.max(0, (sourceNodes.length - 1) * gap);
+    const sourceScale = (usableH - sourceGapTotal) / totalSourceVal;
+    for (const node of sourceNodes) {
+      const h = Math.max(14, node.value * sourceScale);
+      sourceYMap.set(node.id, sy + h / 2);
+      sy += h + gap;
+    }
+
+    // Compute y-center for each target node
+    const targetYMap = new Map<string, number>();
+    let ty = padding;
+    const targetGapTotal = Math.max(0, (targetNodes.length - 1) * gap);
+    const targetScale = (usableH - targetGapTotal) / totalTargetVal;
+    for (const node of targetNodes) {
+      const h = Math.max(14, node.value * targetScale);
+      targetYMap.set(node.id, ty + h / 2);
+      ty += h + gap;
+    }
+
+    const maxLinkVal = Math.max(1, ...links.map(l => l.value));
+    const colors = [
+      'rgba(78,140,255,0.2)', 'rgba(52,211,153,0.18)', 'rgba(167,139,250,0.18)',
+      'rgba(251,191,36,0.15)', 'rgba(96,165,250,0.15)', 'rgba(244,114,182,0.15)',
+    ];
+
+    return links.map((link, i) => {
+      const y1 = sourceYMap.get(link.source) ?? 160;
+      const y2 = targetYMap.get(link.target) ?? 160;
+      const cx = width / 2;
+      return {
+        source: link.source,
+        target: link.target,
+        path: `M 0 ${y1} C ${cx} ${y1}, ${cx} ${y2}, ${width} ${y2}`,
+        width: Math.max(2, (link.value / maxLinkVal) * 36),
+        color: colors[i % colors.length],
+        isMaverick: link.isMaverick,
+      };
+    });
+  }
 }
