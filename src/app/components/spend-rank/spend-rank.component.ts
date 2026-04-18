@@ -20,7 +20,7 @@ import { SpendRankItem } from '../../models';
             <div class="rank-body">
               <div class="rank-label-row">
                 <span class="rank-label">{{ item.label }}</span>
-                <span class="rank-value">{{ item.formattedValue }}</span>
+                <span class="rank-value">{{ item.formattedValue }} · {{ item.pct }}%</span>
               </div>
               <div class="rank-bar-track">
                 <div class="rank-bar-fill"
@@ -28,7 +28,6 @@ import { SpendRankItem } from '../../models';
                      [style.background]="item.barColor">
                 </div>
               </div>
-              <div class="rank-pct">{{ item.pct }}%</div>
             </div>
           </div>
         }

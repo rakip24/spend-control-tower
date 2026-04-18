@@ -227,7 +227,7 @@ export class AnalyticsService {
     ]);
   });
 
-  private buildRankList(data: Record<string, number>, total: number, colors: string[], limit = 7): SpendRankItem[] {
+  private buildRankList(data: Record<string, number>, total: number, colors: string[], limit = 5): SpendRankItem[] {
     return Object.entries(data)
       .sort((a, b) => b[1] - a[1])
       .slice(0, limit)

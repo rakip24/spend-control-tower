@@ -1,8 +1,8 @@
 .rank-card {
   background: var(--bg-card);
   border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 14px 16px;
+  border-radius: 12px;
+  padding: 12px 14px;
   overflow: hidden;
 }
 
@@ -10,24 +10,24 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 10px;
-  padding-bottom: 8px;
+  margin-bottom: 8px;
+  padding-bottom: 6px;
   border-bottom: 1px solid var(--border);
 }
 
 .rank-icon {
-  font-size: 16px;
+  font-size: 14px;
   line-height: 1;
 }
 
 .rank-title {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: -0.2px;
 }
 
 .rank-subtitle {
-  font-size: 10px;
+  font-size: 9px;
   color: var(--text-muted);
   margin-top: 1px;
 }
@@ -35,7 +35,7 @@
 .rank-list {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
 }
 
 .rank-row {
@@ -43,8 +43,8 @@
   align-items: center;
   gap: 6px;
   cursor: pointer;
-  padding: 3px 4px;
-  border-radius: 6px;
+  padding: 2px 4px;
+  border-radius: 5px;
   transition: background 0.15s;
 
   &:hover {
@@ -53,10 +53,7 @@
 }
 
 .rank-num {
-  width: 18px;
-  height: 18px;
-  border-radius: 5px;
-  background: rgba(255, 255, 255, 0.06);
+  width: 16px;
   font-size: 9px;
   font-weight: 700;
   display: flex;
@@ -80,7 +77,7 @@
 }
 
 .rank-label {
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 600;
   color: var(--text-primary);
   white-space: nowrap;
@@ -89,7 +86,7 @@
 }
 
 .rank-value {
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 700;
   color: var(--text-secondary);
   white-space: nowrap;

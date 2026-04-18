@@ -1,11 +1,11 @@
 .hero-card {
   background: var(--bg-card);
   border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 24px 28px;
+  border-radius: 12px;
+  padding: 14px 18px;
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 14px;
   position: relative;
   overflow: hidden;
   cursor: pointer;
@@ -18,7 +18,7 @@
 }
 
 .hero-icon {
-  font-size: 36px;
+  font-size: 24px;
   line-height: 1;
   flex-shrink: 0;
 }
@@ -29,26 +29,26 @@
 }
 
 .hero-label {
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 1.5px;
+  letter-spacing: 1.2px;
   color: var(--text-muted);
-  margin-bottom: 6px;
+  margin-bottom: 3px;
 }
 
 .hero-value {
-  font-size: 32px;
+  font-size: 22px;
   font-weight: 800;
-  letter-spacing: -1px;
+  letter-spacing: -0.5px;
   line-height: 1.1;
   color: var(--text-primary);
 }
 
 .hero-subtitle {
-  font-size: 12px;
+  font-size: 10px;
   color: var(--text-secondary);
-  margin-top: 6px;
+  margin-top: 3px;
 }
 
 .hero-accent-bar {
@@ -56,7 +56,7 @@
   bottom: 0;
   left: 0;
   right: 0;
-  height: 3px;
+  height: 2px;
   background: var(--accent);
   opacity: 0.7;
 }
