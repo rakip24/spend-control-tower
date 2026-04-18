@@ -11,6 +11,8 @@ import {
   NLQueryResponse,
   DirtyDataAlert,
   AggregateSummary,
+  SpendRankItem,
+  HeroKpi,
 } from '../models';
 
 @Injectable({ providedIn: 'root' })
@@ -154,6 +156,89 @@ export class AnalyticsService {
       }
     }
     return result;
+  }
+
+  // ── Hero KPIs (Prominent Totals) ──
+
+  readonly heroKpis = computed<HeroKpi[]>(() => {
+    const agg = this.data.aggregate();
+    const poSpend = agg.total_po_spend_usd ?? Math.round(agg.total_annual_spend_usd * (1 - agg.null_po_transactions_pct));
+    const npoSpend = agg.total_npo_spend_usd ?? Math.round(agg.total_annual_spend_usd * agg.null_po_transactions_pct);
+    const poPct = Math.round((poSpend / agg.total_annual_spend_usd) * 100);
+    const npoPct = 100 - poPct;
+    return [
+      {
+        id: 'total-spend',
+        label: 'Total Spend',
+        value: this.formatCurrency(agg.total_annual_spend_usd),
+        icon: '💰',
+        accent: 'var(--accent-blue)',
+        subtitle: `${agg.vendor_count.toLocaleString()} vendors · ${(agg.transaction_count / 1000).toFixed(0)}K txns`,
+      },
+      {
+        id: 'po-spend',
+        label: 'Total PO Spend',
+        value: this.formatCurrency(poSpend),
+        icon: '📋',
+        accent: 'var(--accent-green, #34d399)',
+        subtitle: `${poPct}% of total · On-contract & compliant`,
+      },
+      {
+        id: 'npo-spend',
+        label: 'Total Non-PO Spend',
+        value: this.formatCurrency(npoSpend),
+        icon: '⚠️',
+        accent: 'var(--accent-red, #f87171)',
+        subtitle: `${npoPct}% of total · PCard, manual & maverick`,
+      },
+    ];
+  });
+
+  // ── Spend Rank Lists ──
+
+  readonly topCategories = computed<SpendRankItem[]>(() => {
+    const agg = this.data.aggregate();
+    return this.buildRankList(agg.spend_by_category_l1, agg.total_annual_spend_usd, [
+      '#4e8cff', '#6366f1', '#8b5cf6', '#a78bfa', '#c4b5fd', '#818cf8', '#60a5fa', '#38bdf8',
+    ]);
+  });
+
+  readonly topVendors = computed<SpendRankItem[]>(() => {
+    const agg = this.data.aggregate();
+    const vendorSpend = agg.spend_by_vendor ?? {};
+    return this.buildRankList(vendorSpend, agg.total_annual_spend_usd, [
+      '#34d399', '#2dd4bf', '#22d3ee', '#38bdf8', '#60a5fa', '#818cf8', '#a78bfa', '#c084fc', '#e879f9', '#f472b6',
+    ]);
+  });
+
+  readonly topGlAccounts = computed<SpendRankItem[]>(() => {
+    const agg = this.data.aggregate();
+    const glSpend = agg.spend_by_gl_account ?? {};
+    return this.buildRankList(glSpend, agg.total_annual_spend_usd, [
+      '#fbbf24', '#f59e0b', '#f97316', '#fb923c', '#fdba74', '#fcd34d', '#fde68a', '#fef08a', '#fef9c3',
+    ]);
+  });
+
+  readonly topEltMembers = computed<SpendRankItem[]>(() => {
+    const agg = this.data.aggregate();
+    const eltSpend = agg.spend_by_elt_member ?? {};
+    return this.buildRankList(eltSpend, agg.total_annual_spend_usd, [
+      '#f87171', '#fb923c', '#fbbf24', '#34d399', '#60a5fa', '#a78bfa', '#e879f9',
+    ]);
+  });
+
+  private buildRankList(data: Record<string, number>, total: number, colors: string[]): SpendRankItem[] {
+    return Object.entries(data)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 10)
+      .map(([label, value], i) => ({
+        rank: i + 1,
+        label,
+        value,
+        formattedValue: this.formatCurrency(value),
+        pct: Math.round((value / total) * 100),
+        barColor: colors[i % colors.length],
+      }));
   }
 
   // ── Sankey Data (Level 2) ──

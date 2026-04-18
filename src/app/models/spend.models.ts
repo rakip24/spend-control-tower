@@ -26,6 +26,10 @@ export interface SpendTransaction {
   budget_code: string;
   approver: string;
   source_system: SourceSystem;
+  gl_account: string;
+  gl_account_name: string;
+  elt_member: string;
+  elt_title: string;
 }
 
 export type VendorTier = 'Strategic' | 'Preferred' | 'Tactical' | 'Tail';
@@ -48,6 +52,11 @@ export interface AggregateSummary {
   pcard_unclassified_spend_usd: number;
   null_po_transactions_pct: number;
   duplicate_invoice_risk_pct: number;
+  total_po_spend_usd: number;
+  total_npo_spend_usd: number;
+  spend_by_vendor: Record<string, number>;
+  spend_by_gl_account: Record<string, number>;
+  spend_by_elt_member: Record<string, number>;
 }
 
 export interface SpendDataset {
@@ -157,6 +166,26 @@ export interface DirtyDataAlert {
   prevalence: string;
   impact: string;
   value?: number;
+}
+
+// ── Spend Rank & Hero KPI View Models ──
+
+export interface SpendRankItem {
+  rank: number;
+  label: string;
+  value: number;
+  formattedValue: string;
+  pct: number;
+  barColor: string;
+}
+
+export interface HeroKpi {
+  id: string;
+  label: string;
+  value: string;
+  icon: string;
+  accent: string;
+  subtitle: string;
 }
 
 // ── Data Source Configuration ──

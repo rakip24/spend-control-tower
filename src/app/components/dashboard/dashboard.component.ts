@@ -11,6 +11,8 @@ import { DrilldownPanelComponent } from '../drilldown-panel/drilldown-panel.comp
 import { NlSearchComponent } from '../nl-search/nl-search.component';
 import { DirtyDataBannerComponent } from '../dirty-data-banner/dirty-data-banner.component';
 import { DataSourceConfigComponent } from '../data-source-config/data-source-config.component';
+import { HeroKpiComponent } from '../hero-kpi/hero-kpi.component';
+import { SpendRankComponent } from '../spend-rank/spend-rank.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -26,6 +28,8 @@ import { DataSourceConfigComponent } from '../data-source-config/data-source-con
     NlSearchComponent,
     DirtyDataBannerComponent,
     DataSourceConfigComponent,
+    HeroKpiComponent,
+    SpendRankComponent,
   ],
   template: `
     <!-- HEADER -->
@@ -56,6 +60,44 @@ import { DataSourceConfigComponent } from '../data-source-config/data-source-con
     <!-- DIRTY DATA BANNER -->
     <div class="section-wrapper">
       <app-dirty-data-banner [alerts]="analytics.dirtyDataAlerts()" />
+    </div>
+
+    <!-- HERO KPIs: Total / PO / NPO -->
+    <div class="hero-grid">
+      @for (kpi of analytics.heroKpis(); track kpi.id) {
+        <app-hero-kpi [kpi]="kpi" (click)="openDrilldown('hero-' + kpi.id)" />
+      }
+    </div>
+
+    <!-- SPEND ANALYSIS: 4-up grid -->
+    <div class="level-label">
+      <span>Spend Breakdown — Categories · Vendors · GL Accounts · ELT</span>
+    </div>
+    <div class="rank-grid">
+      <app-spend-rank
+        title="Top Spend Categories"
+        subtitle="L1 category classification"
+        icon="📦"
+        [items]="analytics.topCategories()"
+        (itemClicked)="openDrilldown('c-' + $event)" />
+      <app-spend-rank
+        title="Top Vendors"
+        subtitle="By annual spend volume"
+        icon="🏢"
+        [items]="analytics.topVendors()"
+        (itemClicked)="openDrilldown('vendor-' + $event)" />
+      <app-spend-rank
+        title="Top GL Accounts"
+        subtitle="General Ledger allocation"
+        icon="📒"
+        [items]="analytics.topGlAccounts()"
+        (itemClicked)="openDrilldown('gl-' + $event)" />
+      <app-spend-rank
+        title="Spend by ELT Member"
+        subtitle="Executive Leadership Team"
+        icon="👤"
+        [items]="analytics.topEltMembers()"
+        (itemClicked)="openDrilldown('elt-' + $event)" />
     </div>
 
     <!-- LEVEL 1: BBN -->
